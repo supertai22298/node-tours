@@ -7,12 +7,13 @@ const {
   updateTourById,
   deleteTourById,
   checkTourId,
+  checkCreateTourRequest,
 } = require('../controllers/tourController')
 
 // param middleware
 router.param('id', checkTourId)
 
-router.route('/').get(getAllTour).post(createNewTour)
+router.route('/').get(getAllTour).post(checkCreateTourRequest, createNewTour)
 router
   .route('/:id')
   .get(getTourById)
