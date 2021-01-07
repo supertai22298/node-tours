@@ -4,6 +4,17 @@ const fs = require('fs')
 const app = express()
 app.use(express.json())
 
+app.use((req, res, next) => {
+  console.log('Hello from middle')
+  next()
+  console.log('Hello from middle2')
+})
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next()
+})
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 )
@@ -11,11 +22,11 @@ const tours = JSON.parse(
 const getAllTour = (req, res) => {
   res.status(200).json({
     status: 'Success',
+    requestedAt: req.requestTime,
     result: tours.length,
     data: { tours },
   })
 }
-
 const createNewTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1
 
@@ -36,7 +47,6 @@ const createNewTour = (req, res) => {
     }
   )
 }
-
 const getTourById = (req, res) => {
   const id = +req.params.id
 
