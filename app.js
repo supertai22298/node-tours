@@ -1,7 +1,10 @@
 const express = require('express')
 const fs = require('fs')
+const morgan = require('morgan')
 
 const app = express()
+
+app.use(morgan('dev'))
 app.use(express.json())
 
 app.use((req, res, next) => {
@@ -11,7 +14,7 @@ app.use((req, res, next) => {
 })
 
 app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
+  req.requestTime = new Date().toISOString()
   next()
 })
 
@@ -96,6 +99,37 @@ const deleteTourById = (req, res) => {
   })
 }
 
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'Error',
+    message: 'Not implement'
+  })
+}
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'Error',
+    message: 'Not implement'
+  })
+}
+const getUserById = (req, res) => {
+  res.status(500).json({
+    status: 'Error',
+    message: 'Not implement'
+  })
+}
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'Error',
+    message: 'Not implement'
+  })
+}
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'Error',
+    message: 'Not implement'
+  })
+}
+
 const TOUR_API_URL = '/api/v1/tours'
 
 // app.get(TOUR_API_URL, getAllTour)
@@ -111,6 +145,13 @@ app
   .get(getTourById)
   .patch(updateTourById)
   .delete(deleteTourById)
+
+app.route('/api/v1/users').get(getAllUsers).post(createUser)
+app
+  .route('/api/v1/users/:id')
+  .get(getUserById)
+  .patch(updateUser)
+  .delete(deleteUser)
 
 const PORT = 3000
 app.listen(PORT, () => {
