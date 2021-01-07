@@ -32,31 +32,15 @@ exports.createNewTour = (req, res) => {
   )
 }
 exports.getTourById = (req, res) => {
-  const id = +req.params.id
+  const tour = req.tour
 
-  const tour = tours.find((item) => item.id === id)
-
-  if (!tour) {
-    res.status(404).json({
-      status: 'false',
-      message: 'Could not find any tour',
-    })
-  }
   res.status(200).json({
     status: 'Success',
     data: { tour },
   })
 }
 exports.updateTourById = (req, res) => {
-  const id = +req.params.id
-  const tour = tours.find((item) => item.id === id)
-
-  if (!tour) {
-    res.status(404).json({
-      status: 'false',
-      message: 'Could not find any tour',
-    })
-  }
+  const tour = req.tour
 
   res.status(200).json({
     status: 'Success',
@@ -64,18 +48,21 @@ exports.updateTourById = (req, res) => {
   })
 }
 exports.deleteTourById = (req, res) => {
-  const id = +req.params.id
-  const tour = tours.find((item) => item.id === id)
+  const tour = req.tour
 
+  res.status(200).json({
+    status: 'Success',
+    data: { tour: '<Delete tour here>' },
+  })
+}
+exports.checkTourId = (req, res, next, value) => {
+  const tour = tours.find((item) => item.id === +value)
   if (!tour) {
     res.status(404).json({
       status: 'false',
       message: 'Could not find any tour',
     })
   }
-
-  res.status(200).json({
-    status: 'Success',
-    data: { tour: '<Delete tour here>' },
-  })
+  req.tour = tour
+  next()
 }
