@@ -12,7 +12,4 @@ app.use(express.json())
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 
-const PORT = 3000
-app.listen(PORT, () => {
-  console.log(`App is running at http://localhost:${PORT}`)
-})
+module.exports = app
