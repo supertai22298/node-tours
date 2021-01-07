@@ -1,35 +1,12 @@
 const express = require('express')
 
-const getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-const createUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-const getUserById = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-const updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
+const {
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require('../controllers/userController')
 
 const userRouter = express.Router()
 userRouter.route('/').get(getAllUsers).post(createUser)
