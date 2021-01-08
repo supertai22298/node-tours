@@ -1,38 +1,31 @@
-const fs = require('fs')
-
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-)
+const Tour = require('../models/tourModel')
 
 exports.getAllTour = (req, res) => {
   res.status(200).json({
     status: 'Success',
-    result: tours.length,
-    data: { tours },
+    // result: tours.length,
+    // data: { tours },
   })
 }
-exports.createNewTour = (req, res) => {
-  const newId = tours[tours.length - 1].id + 1
-
-  const newTour = Object.assign({ id: newId }, req.body)
-
-  tours.push(newTour)
-
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      return res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      })
-    }
-  )
+exports.createNewTour = async (req, res) => {
+  // const { name, rating, price } = req.body
+  try {
+    const newTour = await Tour.create(req.body)
+    return res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: 'failure',
+      message: error,
+    })
+  }
 }
 exports.getTourById = (req, res) => {
-  const tour = req.tour
+  const { tour } = req
 
   res.status(200).json({
     status: 'Success',
@@ -40,7 +33,7 @@ exports.getTourById = (req, res) => {
   })
 }
 exports.updateTourById = (req, res) => {
-  const tour = req.tour
+  const { tour } = req
 
   res.status(200).json({
     status: 'Success',
@@ -48,7 +41,7 @@ exports.updateTourById = (req, res) => {
   })
 }
 exports.deleteTourById = (req, res) => {
-  const tour = req.tour
+  const { tour } = req
 
   res.status(200).json({
     status: 'Success',
@@ -56,23 +49,13 @@ exports.deleteTourById = (req, res) => {
   })
 }
 exports.checkTourId = (req, res, next, value) => {
-  const tour = tours.find((item) => item.id === +value)
-  if (!tour) {
-    return res.status(404).json({
-      status: 'false',
-      message: 'Could not find any tour',
-    })
-  }
-  req.tour = tour
-  next()
-}
-
-exports.checkCreateTourRequest = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'Invalid request',
-    })
-  }
+  // const tour = tours.find((item) => item.id === +value)
+  // if (!tour) {
+  //   return res.status(404).json({
+  //     status: 'false',
+  //     message: 'Could not find any tour',
+  //   })
+  // }
+  // req.tour = tour
   next()
 }
