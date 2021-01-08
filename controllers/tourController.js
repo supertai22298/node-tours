@@ -1,11 +1,20 @@
 const Tour = require('../models/tourModel')
 
-exports.getAllTour = (req, res) => {
-  res.status(200).json({
-    status: 'Success',
-    // result: tours.length,
-    // data: { tours },
-  })
+exports.getAllTour = async (req, res) => {
+  try {
+    const tours = await Tour.find()
+
+    return res.status(200).json({
+      status: 'Success',
+      result: tours.length,
+      data: { tours },
+    })
+  } catch (error) {
+    return res.status(200).json({
+      status: 'Failure',
+      message: error,
+    })
+  }
 }
 exports.createNewTour = async (req, res) => {
   // const { name, rating, price } = req.body
@@ -24,13 +33,20 @@ exports.createNewTour = async (req, res) => {
     })
   }
 }
-exports.getTourById = (req, res) => {
-  const { tour } = req
+exports.getTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id)
 
-  res.status(200).json({
-    status: 'Success',
-    data: { tour },
-  })
+    return res.status(200).json({
+      status: 'Success',
+      data: { tour },
+    })
+  } catch (error) {
+    return res.status(404).json({
+      status: 'false',
+      message: 'Could not find any tour',
+    })
+  }
 }
 exports.updateTourById = (req, res) => {
   const { tour } = req
@@ -47,15 +63,4 @@ exports.deleteTourById = (req, res) => {
     status: 'Success',
     data: { tour: '<Delete tour here>' },
   })
-}
-exports.checkTourId = (req, res, next, value) => {
-  // const tour = tours.find((item) => item.id === +value)
-  // if (!tour) {
-  //   return res.status(404).json({
-  //     status: 'false',
-  //     message: 'Could not find any tour',
-  //   })
-  // }
-  // req.tour = tour
-  next()
 }
