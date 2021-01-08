@@ -3,7 +3,6 @@ const Tour = require('../models/tourModel')
 exports.getAllTour = async (req, res) => {
   try {
     const tours = await Tour.find()
-
     return res.status(200).json({
       status: 'Success',
       result: tours.length,
@@ -36,7 +35,6 @@ exports.createNewTour = async (req, res) => {
 exports.getTourById = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id)
-
     return res.status(200).json({
       status: 'Success',
       data: { tour },
@@ -48,13 +46,22 @@ exports.getTourById = async (req, res) => {
     })
   }
 }
-exports.updateTourById = (req, res) => {
-  const { tour } = req
-
-  res.status(200).json({
-    status: 'Success',
-    data: { tour: '<Update tour here>' },
-  })
+exports.updateTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    return res.status(200).json({
+      status: 'Success',
+      data: { tour },
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: 'false',
+      message: error,
+    })
+  }
 }
 exports.deleteTourById = (req, res) => {
   const { tour } = req
