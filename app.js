@@ -5,8 +5,8 @@ const tourRouter = require('./routes/tourRouter')
 const userRouter = require('./routes/userRouter')
 
 const app = express()
-console.log(process.env.NODE_ENV);
-if(process.env.NODE_ENV === 'development'){
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 app.use(express.json())
