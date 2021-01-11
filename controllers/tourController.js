@@ -31,6 +31,17 @@ exports.getAllTour = async (req, res) => {
       query = query.select('-__v')
     }
 
+    // pagination
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 100
+    const skip = (page - 1) * limit
+
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numberOfTour = await Tour.countDocuments()
+      if (skip >= numberOfTour) throw new Error('This page does not exits')
+    }
     // Execute query
     const tours = await query
 
@@ -40,7 +51,7 @@ exports.getAllTour = async (req, res) => {
       data: { tours },
     })
   } catch (error) {
-    return res.status(200).json({
+    return res.status(404).json({
       status: 'Failure',
       message: error,
     })
