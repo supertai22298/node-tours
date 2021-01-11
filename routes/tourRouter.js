@@ -7,6 +7,7 @@ const {
   getTourById,
   updateTourById,
   deleteTourById,
+  aliasTopTour,
   // checkTourId,
 } = require('../controllers/tourController')
 
@@ -32,6 +33,7 @@ exports.checkTourId = async (req, res, next, value) => {
   }
 }
 */
+router.route('/top-5-cheap').get(aliasTopTour, getAllTour)
 
 router.route('/').get(getAllTour).post(createNewTour)
 router
