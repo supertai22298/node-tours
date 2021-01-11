@@ -13,14 +13,22 @@ exports.getAllTour = async (req, res) => {
       /\b(gte|gt|lte|lt)\b/g,
       (match) => `$${match}`
     )
-    const query = Tour.find(JSON.parse(queryString))
+    let query = Tour.find(JSON.parse(queryString))
 
     // sorting
     if (req.query.sort) {
       const sortBy = req.query.sort.split(',').join(' ')
-      query.sort(sortBy)
+      query = query.sort(sortBy)
     } else {
-      query.sort('-createdAt')
+      query = query.sort('-createdAt')
+    }
+
+    // field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      query = query.select('-__v')
     }
 
     // Execute query
