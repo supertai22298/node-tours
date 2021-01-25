@@ -8,12 +8,17 @@ const {
   updateUser,
   deleteUser,
 } = require('../controllers/userController')
-const { verifyToken } = require('../middlewares/authMiddleware')
+const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 
 router.post('/signup', signup).post('/login', login)
 router.use(verifyToken).route('/').get(getAllUsers).post(createUser)
-router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser)
+router
+  .use(verifyToken)
+  .route('/:id')
+  .get(getUserById)
+  .patch(updateUser)
+  .delete(restrictTo('admin', 'lead-guide'), deleteUser)
 
 module.exports = router
