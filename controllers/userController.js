@@ -1,4 +1,4 @@
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
   res.status(500).json({
     status: 'Error',
     message: 'Not implement',
