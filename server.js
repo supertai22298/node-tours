@@ -19,6 +19,13 @@ mongoose
     console.log('DB connected')
   })
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App is running at http://localhost:${PORT}`)
+})
+
+process.on('unhandledRejection', (err) => {
+  console.log('unhandledRejection', err)
+  server.close(() => {
+    process.exit(1)
+  })
 })
