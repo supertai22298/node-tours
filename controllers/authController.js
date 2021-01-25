@@ -1,13 +1,7 @@
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
-
-const signToken = async (payload) =>
-  await jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  })
+const { signToken } = require('../utils/jwt')
 
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, password, passwordConfirm } = req.body
@@ -33,8 +27,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body
 
-  // check email and password existing
-
+  // check email and password existing in request's body
   if (!email || !password)
     return next(new AppError('Please provide email and password', 400))
 
