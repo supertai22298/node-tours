@@ -7,6 +7,15 @@ const sendMail = require('../utils/email')
 
 const sendJwtToken = async (statusCode, user, res) => {
   const token = await signToken({ id: user._id })
+  user.password = undefined
+
+  res.cookie('jwt', token, {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 3600 * 1000
+    ),
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+  })
   res.status(statusCode).json({
     status: 'Update password successful',
     token,
