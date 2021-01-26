@@ -5,6 +5,15 @@ const AppError = require('../utils/appError')
 const { signToken } = require('../utils/jwt')
 const sendMail = require('../utils/email')
 
+const sendJwtToken = async (statusCode, user, res) => {
+  const token = await signToken({ id: user._id })
+  res.status(statusCode).json({
+    status: 'Update password successful',
+    token,
+    data: { user },
+  })
+}
+
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, password, passwordConfirm } = req.body
 
@@ -15,15 +24,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm,
   })
 
-  const token = await signToken({ id: newUser._id })
-
-  res.status(201).json({
-    status: 'Success',
-    token,
-    data: {
-      user: newUser,
-    },
-  })
+  await sendJwtToken(201, newUser, res)
 })
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -37,16 +38,11 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select('+password')
   if (!user) return next(new AppError('Email is incorrect', 401))
 
-  const correctPassword = await user.correctPassword(password)
+  const correctPassword = await user.correctPassword(password, user.password)
   if (!correctPassword) return next(new AppError('Password is incorrect', 401))
 
   // Send new token for user
-  const token = await signToken({ id: user._id })
-
-  res.status(200).json({
-    status: 'Success',
-    token,
-  })
+  await sendJwtToken(200, user, res)
 })
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
@@ -64,7 +60,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 3. Send the link via email with resetToken
   const resetUrl = `${req.protocol}://${req.get(
     'host'
-  )}/api/users/resetPassword/${resetToken}`
+  )}/api/v1/users/resetPassword/${resetToken}`
 
   try {
     // Can remove 'await' if don't want catch the error or result
@@ -108,8 +104,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   await user.save()
 
-  res.status(200).json({
-    status: 'Success',
-    message: 'Change password successful',
-  })
+  // Login user and send jwt based on the requirement
+  await sendJwtToken(200, user, res)
+})
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword, newPasswordConfirm } = req.body
+
+  // Get user from req.
+  const user = await User.findById(req.user.id).select('+password')
+  // Check the current password is correct
+
+  if (!(await user.correctPassword(currentPassword, user.password)))
+    return next(new AppError('Current password is incorrect', 400))
+
+  // Update password based on the req.body
+  user.password = newPassword
+  user.passwordConfirm = newPasswordConfirm
+
+  await user.save()
+  // User.findByIdAndUpdate doesn't trigger the middleware
+  // and doesn't know the this.password in middlewar
+
+  await sendJwtToken(200, user, res)
 })

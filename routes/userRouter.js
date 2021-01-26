@@ -4,6 +4,7 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  updatePassword,
 } = require('../controllers/authController')
 
 const {
@@ -21,7 +22,10 @@ router.post('/signup', signup).post('/login', login)
 router
   .post('/forgot-password', forgotPassword)
   .patch('/reset-password/:resetToken', resetPassword)
+  .patch('/update-password', verifyToken, updatePassword)
+
 router.use(verifyToken).route('/').get(getAllUsers).post(createUser)
+
 router
   .use(verifyToken)
   .route('/:id')
