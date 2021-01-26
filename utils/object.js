@@ -1,6 +1,6 @@
 exports.filteredObj = (obj, ...allowedFields) => {
   const newObj = {}
-  Object.keys(obj).filter((key) => {
+  Object.keys(obj).forEach((key) => {
     if (allowedFields.includes(key)) newObj[key] = obj[key]
   })
 
