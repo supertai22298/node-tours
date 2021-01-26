@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const xss = require('xss-clean')
+const hpp = require('hpp')
 const mongoSanitize = require('express-mongo-sanitize')
 
 const AppError = require('./utils/appError')
@@ -30,11 +31,24 @@ app.use('/api', limiter)
 // limit json size and covert body from json to js object
 app.use(express.json({ limit: '10kb' }))
 
-// Prevent Mongo rejection
+// Prevent Mongo injection
 app.use(mongoSanitize())
 
 // Prevent xss attack
 app.use(xss())
+
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  })
+)
 
 app.use(express.static(`${__dirname}/public/`))
 
