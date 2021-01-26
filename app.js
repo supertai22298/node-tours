@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
+const helmet = require('helmet')
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
 
@@ -17,9 +18,9 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
   message: 'Too many request, please try again in an hour',
 })
-app.use(limiter)
-
-app.use(express.json())
+app.use(helmet())
+app.use('/api', limiter)
+app.use(express.json({ limit: '10kb' }))
 app.use(express.static(`${__dirname}/public/`))
 
 app.use('/api/v1/tours', tourRouter)
