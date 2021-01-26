@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
   },
   passwordResetToken: String,
   passwordResetExpired: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 })
 
 userSchema.pre('save', async function (next) {
@@ -89,6 +94,12 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken
 }
 
+userSchema.pre(/^find/, function (next) {
+  this.find({
+    active: { $ne: false },
+  })
+  next()
+})
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
