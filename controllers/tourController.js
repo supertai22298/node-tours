@@ -26,7 +26,8 @@ exports.getAllTour = catchAsync(async (req, res, next) => {
   })
 })
 exports.createNewTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body, { runValidators: true })
+  console.log('request:', req.body)
+  const newTour = await Tour.create([req.body], { runValidators: true })
   return res.status(201).json({
     status: 'success',
     data: {

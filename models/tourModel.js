@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify')
+const User = require('./userModel')
 
 const tourSchema = new mongoose.Schema(
   {
@@ -9,7 +10,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       maxlength: [40, 'A tour name must have less or equal 40 characters'],
-      minlength: [19, 'A tour name must have more than 10 characters'],
+      minlength: [10, 'A tour name must have more than 10 characters'],
     },
     slug: String,
     duration: {
@@ -65,6 +66,34 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      address: String,
+      coordinates: [Number],
+      description: String,
+    },
+    location: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        address: String,
+        coordinates: [Number],
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -85,10 +114,13 @@ tourSchema.pre('save', function (next) {
   next()
 })
 
-tourSchema.pre('save', function (next) {
-  console.log('Will save document...')
+/*
+Embedding the document to other
+tourSchema.pre('save', async function (next) {
+  const guidesPromises = this.guides.map(async (id) => await User.findById(id))
+  this.guides = await Promise.all(guidesPromises)
   next()
-})
+})*/
 
 tourSchema.post('save', function (doc, next) {
   console.log(doc)

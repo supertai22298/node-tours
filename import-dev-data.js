@@ -20,7 +20,7 @@ mongoose
   })
 
 const tours = JSON.parse(
-  fs.readFileSync('./dev-data/data/tours-simple.json', {
+  fs.readFileSync('./dev-data/data/tours.json', {
     encoding: 'utf-8',
   })
 )
