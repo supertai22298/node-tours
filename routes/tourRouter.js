@@ -12,29 +12,11 @@ const {
   getMonthlyPlan,
   // checkTourId,
 } = require('../controllers/tourController')
+const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
+const reviewRouter = require('./reviewRoute')
 
-/*
-//param middleware
-router.param('id', checkTourId)
-exports.checkTourId = async (req, res, next, value) => {
-  try {
-    const tour = await Tour.findById(req.params.id)
-    if (!tour) {
-      return res.status(404).json({
-        status: 'false',
-        message: 'Could not find any tour',
-      })
-    }
-    req.tour = tour
-    next()
-  } catch (error) {
-    return res.status(500).json({
-      status: 'failure',
-      message: error,
-    })
-  }
-}
-*/
+router.use('/:tourId/reviews', reviewRouter)
+
 router.route('/top-5-cheap').get(aliasTopTour, getAllTour)
 
 router.route('/tours-stat').get(getTourStats)

@@ -6,11 +6,11 @@ const {
 } = require('../controllers/reviewController')
 const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 
-const router = express.Router()
+const router = express.Router({ mergeParams: true })
 
 router
   .route('/')
   .post(verifyToken, restrictTo('user'), createReview)
   .get(getAllReviews)
-router.route('/:id').get(getReviewById)
+router.route('/:reviewId').get(getReviewById)
 module.exports = router
