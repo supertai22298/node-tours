@@ -35,6 +35,6 @@ router
   .route('/:id')
   .get(getUserById)
   .patch(updateUser)
-  .delete(restrictTo('admin', 'lead-guide'), deleteUser)
+  .delete(restrictTo('admin'), deleteUser)
 
 module.exports = router

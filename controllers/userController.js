@@ -3,16 +3,7 @@ const ApiFeatures = require('../utils/apiFeature')
 const AppError = require('../utils/appError')
 const catchAsync = require('../utils/catchAsync')
 const { filteredObj } = require('../utils/object')
-
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find()
-
-  return res.status(200).json({
-    status: 'Success',
-    result: users.length,
-    data: { users },
-  })
-})
+const { deleteOne, updateOne, getOne, getAll } = require('./handlerFactory')
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1. Create error if user post password data
@@ -51,24 +42,10 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'Error',
-    message: 'Not implement',
+    message: 'Please use sign up route',
   })
 }
-exports.getUserById = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: 'Not implement',
-  })
-}
+exports.getAllUsers = getAll(User)
+exports.getUserById = getOne(User)
+exports.updateUser = updateOne(User)
+exports.deleteUser = deleteOne(User)
