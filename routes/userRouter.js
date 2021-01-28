@@ -22,22 +22,24 @@ const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 
-router.post('/signup', signup).post('/login', login)
+// Route with no auth
 router
+  .post('/signup', signup)
+  .post('/login', login)
   .post('/forgot-password', forgotPassword)
   .patch('/reset-password/:resetToken', resetPassword)
-  .patch('/update-password', verifyToken, updatePassword)
-  .patch('/update-me', verifyToken, updateMe)
-  .delete('/delete-me', verifyToken, deleteMe)
-  .get('/get-me', verifyToken, getMe, getUserById)
 
-router.use(verifyToken).route('/').get(getAllUsers).post(createUser)
-
+// Routes with auth
+router.use(verifyToken)
 router
-  .use(verifyToken)
-  .route('/:id')
-  .get(getUserById)
-  .patch(updateUser)
-  .delete(restrictTo('admin'), deleteUser)
+  .patch('/update-password', updatePassword)
+  .patch('/update-me', updateMe)
+  .delete('/delete-me', deleteMe)
+  .get('/get-me', getMe, getUserById)
+
+// Routes just for admin
+router.use(restrictTo('admin'))
+router.route('/').get(getAllUsers).post(createUser)
+router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser)
 
 module.exports = router

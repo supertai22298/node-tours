@@ -11,7 +11,7 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
   const { authorization } = req.headers
 
   if (!authorization || !authorization.startsWith('Bearer'))
-    return next(new AppError('Invalid token', 401))
+    return next(new AppError('You are not login', 401))
 
   // Verification token
   const token = authorization.split(' ')[1]
