@@ -16,6 +16,31 @@ exports.aliasTopTour = async (req, res, next) => {
   next()
 }
 
+// tours-within/233/center/-40,50/unit/mi
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params
+  const [lng, lat] = latlng.split(',')
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1
+
+  if (!lat || !lng)
+    return next(
+      new AppError('Please provide the formal latitude and longitude', 400)
+    )
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  })
+
+  res.status(200).json({
+    status: 'Success',
+    result: tours.length,
+    data: {
+      data: tours,
+    },
+  })
+})
+
 exports.getAllTour = getAll(Tour)
 exports.createNewTour = createOne(Tour)
 
