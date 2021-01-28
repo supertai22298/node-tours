@@ -49,6 +49,7 @@ exports.getOne = (Model, populateOptions) =>
 
     if (populateOptions) query = query.populate(populateOptions)
 
+    // const doc = await query.explain() to get the stats of query
     const doc = await query
 
     if (!doc) return next(new AppError('Cant find any document', 404))
@@ -72,6 +73,7 @@ exports.getAll = (Model) =>
       .limitFields()
       .paginate()
     const docs = await features.query
+    // const docs = await features.query.explain()
 
     return res.status(200).json({
       status: 'Success',
