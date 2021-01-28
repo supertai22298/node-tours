@@ -11,6 +11,7 @@ const reviewSchema = new mongoose.Schema(
       type: Number,
       min: 1,
       max: 5,
+      set: (value) => Math.round(value * 10) / 10,
     },
     tour: {
       type: mongoose.Schema.ObjectId,
@@ -36,6 +37,7 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 )
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true })
 
 reviewSchema.pre(/^find/, async function (next) {
   this.populate({
