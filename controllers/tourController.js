@@ -18,8 +18,8 @@ exports.aliasTopTour = async (req, res, next) => {
 
 // tours-within/233/center/-40,50/unit/mi
 exports.getToursWithin = catchAsync(async (req, res, next) => {
-  const { distance, latlng, unit } = req.params
-  const [lng, lat] = latlng.split(',')
+  const { distance, lnglat, unit } = req.params
+  const [lng, lat] = lnglat.split(',')
 
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1
 
@@ -41,6 +41,44 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   })
 })
 
+// /distances/:lnglat/unit/:unit
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { lnglat, unit } = req.params
+  const [lng, lat] = lnglat.split(',')
+
+  if (!lat || !lng)
+    return next(
+      new AppError('Please provide the formal latitude and longitude', 400)
+    )
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: { type: 'Point', coordinates: [+lng, +lat] },
+        distanceField: 'distance',
+        distanceMultiplier: 0.001,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+    {
+      $sort: {
+        distance: 1,
+      },
+    },
+  ])
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      data: distances,
+    },
+  })
+})
 exports.getAllTour = getAll(Tour)
 exports.createNewTour = createOne(Tour)
 

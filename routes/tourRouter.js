@@ -11,6 +11,7 @@ const {
   getTourStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 } = require('../controllers/tourController')
 const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 const reviewRouter = require('./reviewRoute')
@@ -22,8 +23,10 @@ router.route('/tours-stat').get(getTourStats)
 router.route('/monthly-plan/:year').get(getMonthlyPlan)
 
 router
-  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .route('/tours-within/:distance/center/:lnglat/unit/:unit')
   .get(getToursWithin)
+
+router.route('/distances/:lnglat/unit/:unit').get(getDistances)
 
 router.use(verifyToken)
 
