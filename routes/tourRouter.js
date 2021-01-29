@@ -28,11 +28,10 @@ router
 
 router.route('/distances/:lnglat/unit/:unit').get(getDistances)
 
-router.use(verifyToken)
-
 router.route('/').get(getAllTour)
 router.route('/:id').get(getTourById)
 
+router.use(verifyToken)
 router.use(restrictTo('admin'))
 
 router.route('/').post(createNewTour)
