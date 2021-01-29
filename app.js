@@ -59,7 +59,10 @@ app.use(
 )
 
 app.get('/', (req, res, next) => {
-  res.status(200).render('base')
+  res.status(200).render('base', {
+    tour: 'Hello word',
+    user: 'Nguyễn Văn Tài',
+  })
 })
 
 app.use('/api/v1/tours', tourRouter)
