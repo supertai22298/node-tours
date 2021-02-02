@@ -32,7 +32,11 @@ const limiter = rateLimit({
   message: 'Too many request, please try again in an hour',
 })
 
-app.use(helmet())
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+)
 
 // limit request
 app.use('/api', limiter)
