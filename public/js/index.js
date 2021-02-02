@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import '@babel/polyfill'
-import { login } from './login'
+import { login, logout } from './login'
 import { displayMap } from './mapbox'
 
 const loginForm = document.getElementById('loginForm')
@@ -17,3 +17,6 @@ if (loginForm)
 
 const locations = document.getElementById('map')
 if (locations) displayMap(JSON.parse(locations.dataset.locations))
+
+const logoutBtn = document.getElementById('logoutBtn')
+if (logoutBtn) logoutBtn.addEventListener('click', logout)

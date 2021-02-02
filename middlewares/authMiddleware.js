@@ -40,20 +40,24 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
 })
 
 // Only for rendered page
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    const decoded = await verifyJwt(req.cookies.jwt)
+    try {
+      const decoded = await verifyJwt(req.cookies.jwt)
 
-    const currentUser = await User.findById(decoded.id)
-    if (!currentUser) return next()
+      const currentUser = await User.findById(decoded.id)
+      if (!currentUser) return next()
 
-    if (currentUser.isChangedPasswordAfter(decoded.iat)) return next()
+      if (currentUser.isChangedPasswordAfter(decoded.iat)) return next()
 
-    res.locals.user = currentUser
-    return next()
+      res.locals.user = currentUser
+      return next()
+    } catch (error) {
+      return next()
+    }
   }
   next()
-})
+}
 
 exports.restrictTo = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {

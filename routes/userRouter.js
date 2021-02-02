@@ -5,6 +5,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
+  logout,
 } = require('../controllers/authController')
 const { getOne } = require('../controllers/handlerFactory')
 
@@ -26,6 +27,7 @@ const router = express.Router()
 router
   .post('/signup', signup)
   .post('/login', login)
+  .get('/logout', logout)
   .post('/forgot-password', forgotPassword)
   .patch('/reset-password/:resetToken', resetPassword)
 

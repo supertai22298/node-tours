@@ -54,6 +54,16 @@ exports.login = catchAsync(async (req, res, next) => {
   await sendJwtToken(200, user, res)
 })
 
+exports.logout = (req, res, next) => {
+  res.cookie('jwt', 'logout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  })
+  res.status(200).json({
+    status: 'success',
+  })
+}
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1. Get user based on email
   const { email } = req.body

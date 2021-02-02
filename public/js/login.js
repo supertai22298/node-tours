@@ -24,3 +24,15 @@ export const login = async (email, password) => {
     showAlert('error', error.response.data.message)
   }
 }
+
+export const logout = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: '/api/v1/users/logout',
+    })
+    if (res.status === 200) location.reload(true)
+  } catch (error) {
+    showAlert('error', 'Try again')
+  }
+}
