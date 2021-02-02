@@ -6,6 +6,7 @@ const xss = require('xss-clean')
 const hpp = require('hpp')
 const mongoSanitize = require('express-mongo-sanitize')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
@@ -44,6 +45,8 @@ app.use('/api', limiter)
 // limit json size and covert body from json to js object
 app.use(express.json({ limit: '10kb' }))
 
+app.use(cookieParser())
+
 // Prevent Mongo injection
 app.use(mongoSanitize())
 
@@ -62,6 +65,11 @@ app.use(
     ],
   })
 )
+
+app.use((req, res, next) => {
+  console.log(req.cookies)
+  next()
+})
 
 app.use('/', viewRouter)
 app.use('/api/v1/tours', tourRouter)

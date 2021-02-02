@@ -17,7 +17,7 @@ const sendJwtToken = async (statusCode, user, res) => {
     httpOnly: true,
   })
   res.status(statusCode).json({
-    status: 'Update password successful',
+    status: 'Send token successful',
     token,
     data: { user },
   })

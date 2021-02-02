@@ -9,12 +9,12 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
   // Get token from request and check if it exists
 
   const { authorization } = req.headers
-
-  if (!authorization || !authorization.startsWith('Bearer'))
-    return next(new AppError('You are not login', 401))
-
-  // Verification token
-  const token = authorization.split(' ')[1]
+  let token
+  if (authorization && authorization.startsWith('Bearer')) {
+    token = authorization.split(' ')[1]
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt
+  }
   if (!token) return next(new AppError('Invalid token', 401))
 
   const decoded = await verifyJwt(token)
@@ -36,6 +36,22 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
     )
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser
+  next()
+})
+
+// Only for rendered page
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    const decoded = await verifyJwt(req.cookies.jwt)
+
+    const currentUser = await User.findById(decoded.id)
+    if (!currentUser) return next()
+
+    if (currentUser.isChangedPasswordAfter(decoded.iat)) return next()
+
+    res.locals.user = currentUser
+    return next()
+  }
   next()
 })
 
