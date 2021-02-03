@@ -44,6 +44,7 @@ app.use('/api', limiter)
 
 // limit json size and covert body from json to js object
 app.use(express.json({ limit: '10kb' }))
+app.use(express.urlencoded({ extended: true, limit: '10kb' }))
 
 app.use(cookieParser())
 

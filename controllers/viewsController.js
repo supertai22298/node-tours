@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel')
+const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
 
 exports.getOverviewView = catchAsync(async (req, res, next) => {
@@ -29,3 +30,22 @@ exports.getLoginView = (req, res, next) => {
 
   res.redirect('/')
 }
+
+exports.getAccountView = (req, res, next) => {
+  res.status(200).render('account', {
+    title: 'Profile',
+  })
+}
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const { email, name } = req.body
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { email, name },
+    { runValidators: true, new: true }
+  )
+  res.status(200).render('account', {
+    title: 'Profile',
+    user,
+  })
+})

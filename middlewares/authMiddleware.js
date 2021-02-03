@@ -59,6 +59,11 @@ exports.isLoggedIn = async (req, res, next) => {
   next()
 }
 
+exports.handleUnauthorized = async (req, res, next) => {
+  if (!res.locals.user) res.redirect('/login')
+  next()
+}
+
 exports.restrictTo = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return next(
