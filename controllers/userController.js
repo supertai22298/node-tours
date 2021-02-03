@@ -25,8 +25,6 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
 exports.uploadUserPhoto = upload.single('photo')
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  console.log(req.file)
-  console.log(req.body)
   // 1. Create error if user post password data
   const { password, passwordConfirm } = req.body
   if (password || passwordConfirm)
@@ -34,6 +32,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // 2. Update user document
   const filteredFields = filteredObj(req.body, 'name', 'email')
+  if (req.file) filteredFields.photo = req.file.filename
   const user = await User.findByIdAndUpdate(req.user.id, filteredFields, {
     new: true,
     runValidators: true,
