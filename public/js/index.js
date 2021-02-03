@@ -28,8 +28,14 @@ if (updateMeForm)
     event.preventDefault()
     const email = document.getElementById('email').value
     const name = document.getElementById('name').value
+    const photo = document.getElementById('photo').files[0]
+    const form = new FormData()
 
-    updateUserData({ email, name })
+    form.append('email', email)
+    form.append('name', name)
+    form.append('photo', photo)
+
+    updateUserData(form)
   })
 
 const changePwdForm = document.getElementById('changePwdForm')

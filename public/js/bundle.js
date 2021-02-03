@@ -7118,10 +7118,12 @@ if (updateMeForm) updateMeForm.addEventListener('submit', function (event) {
   event.preventDefault();
   var email = document.getElementById('email').value;
   var name = document.getElementById('name').value;
-  (0, _updateSettings.updateUserData)({
-    email: email,
-    name: name
-  });
+  var photo = document.getElementById('photo').files[0];
+  var form = new FormData();
+  form.append('email', email);
+  form.append('name', name);
+  form.append('photo', photo);
+  (0, _updateSettings.updateUserData)(form);
 });
 var changePwdForm = document.getElementById('changePwdForm');
 if (changePwdForm) changePwdForm.addEventListener('submit', function (event) {
