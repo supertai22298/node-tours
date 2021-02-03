@@ -7,7 +7,6 @@ const {
   updatePassword,
   logout,
 } = require('../controllers/authController')
-const { getOne } = require('../controllers/handlerFactory')
 
 const {
   getAllUsers,
@@ -19,6 +18,7 @@ const {
   deleteMe,
   getMe,
   uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController')
 const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 
@@ -36,7 +36,7 @@ router
 router.use(verifyToken)
 router
   .patch('/update-password', updatePassword)
-  .patch('/update-me', uploadUserPhoto, updateMe)
+  .patch('/update-me', uploadUserPhoto, resizeUserPhoto, updateMe)
   .delete('/delete-me', deleteMe)
   .get('/get-me', getMe, getUserById)
 
