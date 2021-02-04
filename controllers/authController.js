@@ -3,7 +3,7 @@ const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const { signToken } = require('../utils/jwt')
-const sendMail = require('../utils/email')
+const Email = require('../utils/email')
 
 const sendJwtToken = async (statusCode, user, res) => {
   const token = await signToken({ id: user._id })
@@ -32,7 +32,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     password,
     passwordConfirm,
   })
-
+  const url = `${req.protocol}://${req.get('host')}/me`
+  console.log(url)
+  new Email(newUser, url).sendWelcome()
   await sendJwtToken(201, newUser, res)
 })
 
