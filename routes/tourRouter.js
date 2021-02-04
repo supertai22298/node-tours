@@ -12,6 +12,8 @@ const {
   getMonthlyPlan,
   getToursWithin,
   getDistances,
+  uploadTourImages,
+  resizeTourImages,
 } = require('../controllers/tourController')
 const { verifyToken, restrictTo } = require('../middlewares/authMiddleware')
 const reviewRouter = require('./reviewRoute')
@@ -35,6 +37,9 @@ router.use(verifyToken)
 router.use(restrictTo('admin'))
 
 router.route('/').post(createNewTour)
-router.route('/:id').patch(updateTourById).delete(deleteTourById)
+router
+  .route('/:id')
+  .patch(uploadTourImages, resizeTourImages, updateTourById)
+  .delete(deleteTourById)
 
 module.exports = router
