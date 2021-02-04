@@ -85,11 +85,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   try {
     // Can remove 'await' if don't want catch the error or result
-    await sendMail({
-      to: user.email,
-      subject: 'Forgot your password? (Valid in 10 minutes)',
-      message: `Submit a request with your new password and confirm new password to ${resetUrl}`,
-    })
+    await new Email(user, resetUrl).sendPasswordReset()
   } catch (error) {
     user.resetPassword = undefined
     user.passwordResetExpired = undefined
