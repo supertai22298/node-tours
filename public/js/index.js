@@ -3,6 +3,7 @@ import '@babel/polyfill'
 import { login, logout } from './login'
 import { displayMap } from './mapbox'
 import { updateUserData } from './updateSettings'
+import { bookingTour } from './booking'
 
 const loginForm = document.getElementById('loginForm')
 
@@ -50,4 +51,13 @@ if (changePwdForm)
       { currentPassword, newPassword, newPasswordConfirm },
       'password'
     )
+  })
+
+const bookingBtn = document.getElementById('bookTourBtn')
+
+if (bookingBtn)
+  bookingBtn.addEventListener('click', async (event) => {
+    const { tourId } = event.target.dataset
+    bookingBtn.innerText = 'Loading...'
+    await bookingTour(tourId)
   })
