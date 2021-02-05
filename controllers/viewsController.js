@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel')
 const User = require('../models/userModel')
+const Booking = require('../models/bookingModel')
 const catchAsync = require('../utils/catchAsync')
 
 exports.getOverviewView = catchAsync(async (req, res, next) => {
@@ -51,5 +52,15 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
 })
 
 exports.getCheckoutSuccessView = catchAsync(async (req, res, next) => {
-  res.status(200).render('checkout-success')
+  res.status(200).render('checkout-success', { title: 'Booking success' })
+})
+
+exports.getMyTourView = catchAsync(async (req, res, next) => {
+  //1. find booking with user id
+  const bookings = await Booking.find({ user: req.user.id })
+
+  console.log(bookings)
+  //2. find tour with the returned ids
+
+  res.status(200).render('my-tour', { bookings })
 })
