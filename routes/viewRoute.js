@@ -1,10 +1,12 @@
 const express = require('express')
+const { createBookingCheckout } = require('../controllers/bookingController')
 const {
   getOverviewView,
   getTourView,
   getLoginView,
   getAccountView,
   updateUserData,
+  getCheckoutSuccessView,
 } = require('../controllers/viewsController')
 const {
   isLoggedIn,
@@ -17,6 +19,7 @@ const router = express.Router()
 router.use(isLoggedIn)
 
 router.get('/', getOverviewView)
+router.get('/checkout-success', createBookingCheckout, getCheckoutSuccessView)
 
 router.get('/login', getLoginView)
 
